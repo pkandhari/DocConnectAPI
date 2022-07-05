@@ -103,5 +103,30 @@ namespace DocConnectAPI.Controllers
 
             return await Task.Run(() => this.Ok(objPatient));
         }
+
+        [Route("patients", Name = "UpdatePatient")]
+        [HttpPut]
+        public async Task<IHttpActionResult> UpdatePatient(PatientModel objPatient)
+        {
+            SqlConnection cnn;
+            cnn = new SqlConnection(ConnectionString.GetConnectionString());
+            cnn.Open();
+
+            SqlCommand command;
+            StringBuilder sbSQL = new StringBuilder();
+
+            sbSQL.AppendFormat("UPDATE USER_TABLE SET FIRST_NAME = '{0}', LAST_NAME = '{1}', CONTACT = {2}, EMAIL = '{3}', MARITAL_STATUS = '{4}', GENDER = '{5}', ", objPatient.UserDetails.FirstName, objPatient.UserDetails.LastName, objPatient.UserDetails.Contact, objPatient.UserDetails.Email, objPatient.UserDetails.MaritalStatus, objPatient.UserDetails.Gender);
+            sbSQL.AppendFormat("DOB = '{0}', ADDRESS = '{1}', POSTAL_CODE = '{2}', CITY = '{3}', PROVINCE = '{4}', COUNTRY = '{5}' WHERE USER_ID = {6}", objPatient.UserDetails.DOB, objPatient.UserDetails.Address, objPatient.UserDetails.PostalCode, objPatient.UserDetails.City, objPatient.UserDetails.Province, objPatient.UserDetails.Country, objPatient.UserId);
+            command = new SqlCommand(sbSQL.ToString(), cnn);
+            command.ExecuteNonQuery();
+
+            sbSQL.AppendFormat("UPDATE PATIENT SET HEALTH_ISSUES = '{0}', ALLERGIES = '{1}' WHERE PATIENT_ID = {2}", objPatient.HealthIssues, objPatient.Allergies, objPatient.PatientId);
+            command = new SqlCommand(sbSQL.ToString(), cnn);
+            command.ExecuteNonQuery();
+
+            cnn.Close();
+
+            return await Task.Run(() => this.Ok(objPatient));
+        }
     }
 }

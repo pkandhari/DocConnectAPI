@@ -1,5 +1,6 @@
 ﻿using DocConnectAPI.Helpers;
 using DocConnectAPI.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
@@ -120,6 +121,32 @@ namespace DocConnectAPI.Controllers
             cnn.Close();
 
             return await Task.Run(() => this.Ok(objDoctors));
+        }
+
+        [Route("doctors", Name = "UpdateDoctor")]
+        [HttpPut]
+        public async Task<IHttpActionResult> UpdateDoctor(DoctorModel objDoctor)
+        {
+            SqlConnection cnn;
+            cnn = new SqlConnection(ConnectionString.GetConnectionString());
+            cnn.Open();
+
+            SqlCommand command;
+            StringBuilder sbSQL = new StringBuilder();
+
+            sbSQL.AppendFormat("UPDATE USER_TABLE SET FIRST_NAME = '{0}', LAST_NAME = '{1}', CONTACT = {2}, EMAIL = '{3}', MARITAL_STATUS = '{4}', GENDER = '{5}', ", objDoctor.UserDetails.FirstName, objDoctor.UserDetails.LastName, objDoctor.UserDetails.Contact, objDoctor.UserDetails.Email, objDoctor.UserDetails.MaritalStatus, objDoctor.UserDetails.Gender);
+            sbSQL.AppendFormat("DOB = '{0}', ADDRESS = '{1}', POSTAL_CODE = '{2}', CITY = '{3}', PROVINCE = '{4}', COUNTRY = '{5}' WHERE USER_ID = {6}", objDoctor.UserDetails.DOB, objDoctor.UserDetails.Address, objDoctor.UserDetails.PostalCode, objDoctor.UserDetails.City, objDoctor.UserDetails.Province, objDoctor.UserDetails.Country, objDoctor.UserId);
+            command = new SqlCommand(sbSQL.ToString(), cnn);
+            command.ExecuteNonQuery();
+
+            sbSQL.AppendFormat("UPDATE DOCTOR SET DEGREE = '{0}', GRADUATED_FROM = '{1}', YEARS_OF_EXP = {2}, FIELD_OF_PRACTICE = '{3}', ", objDoctor.Degree, objDoctor.GraduatedFrom, objDoctor.YearsOfExp, objDoctor.FieldOfPractice);
+            sbSQL.AppendFormat("IS_FULL_TIME = '{0}', CURRENT_WORKING_STATUS = '{1}', DEPARTMENT = '{2}', DOJ = '{3}', AVAILABILITY = '{4}' WHERE DOCTOR_ID = {5}", Convert.ToInt16(objDoctor.IsFullTime), objDoctor.CurrentWorkingStatus, objDoctor.Department, objDoctor.DOJ, objDoctor.Availability, objDoctor.DoctorId);
+            command = new SqlCommand(sbSQL.ToString(), cnn);
+            command.ExecuteNonQuery();
+
+            cnn.Close();
+
+            return await Task.Run(() => this.Ok(objDoctor));
         }
     }
 }
