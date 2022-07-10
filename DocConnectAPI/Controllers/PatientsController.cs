@@ -32,7 +32,7 @@ namespace DocConnectAPI.Controllers
             {
                 objPatient = new PatientModel();
                 objPatient.UserDetails = new UserModel();
-                objPatient.UserId = dataReader.GetInt32(0);
+                objPatient.UserDetails.UserId = dataReader.GetInt32(0);
                 objPatient.PatientId = dataReader.GetInt32(1);
                 objPatient.UserDetails.FirstName = dataReader.IsDBNull(2) ? string.Empty : dataReader.GetString(2);
                 objPatient.UserDetails.LastName = dataReader.IsDBNull(3) ? string.Empty : dataReader.GetString(3);
@@ -72,14 +72,14 @@ namespace DocConnectAPI.Controllers
             PatientModel objPatient = null;
 
             sbSQL.AppendFormat("SELECT UT.USER_ID USER_ID, PATIENT_ID, FIRST_NAME, LAST_NAME, CONTACT, EMAIL, MARITAL_STATUS, GENDER, DOB, ADDRESS, POSTAL_CODE, CITY, PROVINCE, COUNTRY, IS_DOCTOR, ALLERGIES, HEALTH_ISSUES ");
-            sbSQL.AppendFormat("FROM PATIENT INNER JOIN USER_TABLE UT ON UT.USER_ID = PATIENT.USER_ID WHERE PATIENT_ID = {0}", patientId);
+            sbSQL.AppendFormat("FROM PATIENT INNER JOIN USER_TABLE UT ON UT.USER_ID = PATIENT.USER_ID WHERE PATIENT.USER_ID = {0}", patientId);
             command = new SqlCommand(sbSQL.ToString(), cnn);
             dataReader = command.ExecuteReader();
             if (dataReader.Read())
             {
                 objPatient = new PatientModel();
                 objPatient.UserDetails = new UserModel();
-                objPatient.UserId = dataReader.GetInt32(0);
+                objPatient.UserDetails.UserId = dataReader.GetInt32(0);
                 objPatient.PatientId = dataReader.GetInt32(1);
                 objPatient.UserDetails.FirstName = dataReader.IsDBNull(2) ? string.Empty : dataReader.GetString(2);
                 objPatient.UserDetails.LastName = dataReader.IsDBNull(3) ? string.Empty : dataReader.GetString(3);
@@ -116,7 +116,7 @@ namespace DocConnectAPI.Controllers
             StringBuilder sbSQL = new StringBuilder();
 
             sbSQL.AppendFormat("UPDATE USER_TABLE SET FIRST_NAME = '{0}', LAST_NAME = '{1}', CONTACT = {2}, EMAIL = '{3}', MARITAL_STATUS = '{4}', GENDER = '{5}', ", objPatient.UserDetails.FirstName, objPatient.UserDetails.LastName, objPatient.UserDetails.Contact, objPatient.UserDetails.Email, objPatient.UserDetails.MaritalStatus, objPatient.UserDetails.Gender);
-            sbSQL.AppendFormat("DOB = '{0}', ADDRESS = '{1}', POSTAL_CODE = '{2}', CITY = '{3}', PROVINCE = '{4}', COUNTRY = '{5}' WHERE USER_ID = {6}", objPatient.UserDetails.DOB, objPatient.UserDetails.Address, objPatient.UserDetails.PostalCode, objPatient.UserDetails.City, objPatient.UserDetails.Province, objPatient.UserDetails.Country, objPatient.UserId);
+            sbSQL.AppendFormat("DOB = '{0}', ADDRESS = '{1}', POSTAL_CODE = '{2}', CITY = '{3}', PROVINCE = '{4}', COUNTRY = '{5}' WHERE USER_ID = {6}", objPatient.UserDetails.DOB, objPatient.UserDetails.Address, objPatient.UserDetails.PostalCode, objPatient.UserDetails.City, objPatient.UserDetails.Province, objPatient.UserDetails.Country, objPatient.UserDetails.UserId);
             command = new SqlCommand(sbSQL.ToString(), cnn);
             command.ExecuteNonQuery();
 

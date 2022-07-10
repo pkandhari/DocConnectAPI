@@ -3,7 +3,6 @@
     public class DoctorModel
     {
         public int DoctorId { get; set; }
-        public int UserId { get; set; }
         public string Degree { get; set; }
         public string GraduatedFrom { get; set; }
         public int YearsOfExp { get; set; }

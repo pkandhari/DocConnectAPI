@@ -1,5 +1,6 @@
 ﻿using DocConnectAPI.Helpers;
 using DocConnectAPI.Models;
+using System;
 using System.Data.SqlClient;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace DocConnectAPI.Controllers
             SqlCommand command;
             SqlDataReader dataReader;
             StringBuilder sbSQL = new StringBuilder();
-            sbSQL.AppendFormat("SELECT LD.USER_ID, FIRST_NAME + ' ' + LAST_NAME DISPLAY_NAME FROM USER_TABLE UT ");
+            sbSQL.AppendFormat("SELECT LD.USER_ID, FIRST_NAME + ' ' + LAST_NAME DISPLAY_NAME, EMAIL, IS_ADMIN, IS_DOCTOR FROM USER_TABLE UT ");
             sbSQL.AppendFormat("INNER JOIN LOGIN_DETAILS LD ON LD.USER_ID = UT.USER_ID WHERE USER_NAME = '{0}' AND PASSWORD = '{1}'", objuserlogin.UserName, objuserlogin.UserPassword);
             command = new SqlCommand(sbSQL.ToString(), cnn);
             dataReader = command.ExecuteReader();
@@ -27,6 +28,13 @@ namespace DocConnectAPI.Controllers
             {
                 objuserlogin.UserId = dataReader.GetInt32(0);
                 objuserlogin.DisplayName = dataReader.GetString(1).Trim();
+                objuserlogin.Email = dataReader.GetString(2);
+                objuserlogin.IsAdmin = dataReader.GetBoolean(3);
+                objuserlogin.IsDoctor = dataReader.GetBoolean(4);
+            }
+            else
+            {
+                throw new Exception("Invalid username or password.");
             }
 
             cnn.Close();
