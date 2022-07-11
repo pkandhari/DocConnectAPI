@@ -10,8 +10,9 @@ namespace DocConnectAPI.Controllers
 {
     public class LoginController : ApiController
     {
+        [Route("login", Name = "UserLogin")]
         [HttpPost]
-        public async Task<IHttpActionResult> Login(UserLoginModel objuserlogin)
+        public async Task<IHttpActionResult> UserLogin(UserLoginModel objuserlogin)
         {
             SqlConnection cnn;
             cnn = new SqlConnection(ConnectionString.GetConnectionString());
@@ -40,6 +41,43 @@ namespace DocConnectAPI.Controllers
             cnn.Close();
 
             return await Task.Run(() => this.Ok(objuserlogin));
+        }
+
+        [Route("login", Name = "UpdateLoginDetails")]
+        [HttpPut]
+        public async Task<IHttpActionResult> UpdateLoginDetails(LoginDetailsModel objLoginDetails)
+        {
+            SqlConnection cnn;
+            cnn = new SqlConnection(ConnectionString.GetConnectionString());
+            cnn.Open();
+
+            SqlCommand command;
+            SqlDataReader dataReader;
+            StringBuilder sbSQL = new StringBuilder();
+            bool isAuthenticated = false;
+
+            sbSQL.AppendFormat("SELECT USER_ID FROM LOGIN_DETAILS WHERE USER_ID = {0} AND PASSWORD = '{1}'", objLoginDetails.UserId, objLoginDetails.OldPassword);
+            command = new SqlCommand(sbSQL.ToString(), cnn);
+            dataReader = command.ExecuteReader();
+            if (dataReader.Read())
+                isAuthenticated = true;
+
+            dataReader.Close();
+            if (isAuthenticated)
+            {
+                sbSQL.AppendFormat("UPDATE LOGIN_DETAILS SET PASSWORD = '{0}' WHERE USER_ID = {1}", objLoginDetails.NewPassword, objLoginDetails.UserId);
+                command = new SqlCommand(sbSQL.ToString(), cnn);
+                command.ExecuteNonQuery();
+                dataReader.Close();
+            }
+            else
+            {
+                throw new Exception("Old password not correct.");
+            }
+
+            cnn.Close();
+
+            return await Task.Run(() => this.Ok(objLoginDetails));
         }
     }
 }
