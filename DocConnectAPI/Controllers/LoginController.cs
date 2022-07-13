@@ -72,7 +72,7 @@ namespace DocConnectAPI.Controllers
             }
             else
             {
-                throw new Exception("Old password not correct.");
+                throw new Exception("Old password is not correct.");
             }
 
             cnn.Close();
