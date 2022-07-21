@@ -5,9 +5,11 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace DocConnectAPI.Controllers
 {
+    [EnableCors(origins: "http://localhost:3001", headers: "*", methods: "*")]
     public class AppointmentsController : ApiController
     {
         [Route("patients/{patientId}/appointments", Name = "GetPatientAppointments")]

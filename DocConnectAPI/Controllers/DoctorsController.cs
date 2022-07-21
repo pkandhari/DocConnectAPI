@@ -6,9 +6,11 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace DocConnectAPI.Controllers
 {
+    [EnableCors(origins: "http://localhost:3001", headers: "*", methods: "*")]
     public class DoctorsController : ApiController
     {
         [Route("doctors", Name = "GetDoctors")]
@@ -82,7 +84,7 @@ namespace DocConnectAPI.Controllers
             DoctorModel objDoctors = null;
 
             sbSQL.AppendFormat("SELECT UT.USER_ID USER_ID, DOCTOR_ID, FIRST_NAME, LAST_NAME, CONTACT, EMAIL, MARITAL_STATUS, GENDER, DOB, ADDRESS, POSTAL_CODE, CITY, PROVINCE, COUNTRY, ");
-            sbSQL.AppendFormat("IS_DOCTOR, DEGREE, GRADUATED_FROM, YEARS_OF_EXP, FIELD_OF_PRACTICE, IS_FULL_TIME, CURRENT_WORKING_STATUS, DEPARTMENT, DOJ, AVAILABILITY, IS_ACTIVE ");
+            sbSQL.AppendFormat("IS_DOCTOR, IS_ADMIN, DEGREE, GRADUATED_FROM, YEARS_OF_EXP, FIELD_OF_PRACTICE, IS_FULL_TIME, CURRENT_WORKING_STATUS, DEPARTMENT, DOJ, AVAILABILITY, IS_ACTIVE ");
             sbSQL.AppendFormat("FROM DOCTOR INNER JOIN USER_TABLE UT ON UT.USER_ID = DOCTOR.USER_ID WHERE DOCTOR.USER_ID = {0}", doctorId);
             command = new SqlCommand(sbSQL.ToString(), cnn);
             dataReader = command.ExecuteReader();
@@ -105,16 +107,17 @@ namespace DocConnectAPI.Controllers
                 objDoctors.UserDetails.Province = dataReader.IsDBNull(12) ? string.Empty : dataReader.GetString(12);
                 objDoctors.UserDetails.Country = dataReader.IsDBNull(13) ? string.Empty : dataReader.GetString(13);
                 objDoctors.UserDetails.IsDoctor = dataReader.GetBoolean(14);
-                objDoctors.Degree = dataReader.IsDBNull(15) ? string.Empty : dataReader.GetString(15);
-                objDoctors.GraduatedFrom = dataReader.IsDBNull(16) ? string.Empty : dataReader.GetString(16);
-                objDoctors.YearsOfExp = dataReader.GetInt32(17);
-                objDoctors.FieldOfPractice = dataReader.IsDBNull(18) ? string.Empty : dataReader.GetString(18);
-                objDoctors.IsFullTime = dataReader.GetBoolean(19);
-                objDoctors.CurrentWorkingStatus = dataReader.IsDBNull(20) ? string.Empty : dataReader.GetString(20);
-                objDoctors.Department = dataReader.IsDBNull(21) ? string.Empty : dataReader.GetString(21);
-                objDoctors.DOJ = dataReader.IsDBNull(22) ? string.Empty : dataReader.GetString(22);
-                objDoctors.Availability = dataReader.IsDBNull(23) ? string.Empty : dataReader.GetString(23);
-                objDoctors.IsActive = dataReader.GetBoolean(24);
+                objDoctors.UserDetails.IsAdmin = dataReader.GetBoolean(15);
+                objDoctors.Degree = dataReader.IsDBNull(16) ? string.Empty : dataReader.GetString(16);
+                objDoctors.GraduatedFrom = dataReader.IsDBNull(17) ? string.Empty : dataReader.GetString(17);
+                objDoctors.YearsOfExp = dataReader.GetInt32(18);
+                objDoctors.FieldOfPractice = dataReader.IsDBNull(19) ? string.Empty : dataReader.GetString(19);
+                objDoctors.IsFullTime = dataReader.GetBoolean(20);
+                objDoctors.CurrentWorkingStatus = dataReader.IsDBNull(21) ? string.Empty : dataReader.GetString(21);
+                objDoctors.Department = dataReader.IsDBNull(22) ? string.Empty : dataReader.GetString(22);
+                objDoctors.DOJ = dataReader.IsDBNull(23) ? string.Empty : dataReader.GetString(23);
+                objDoctors.Availability = dataReader.IsDBNull(24) ? string.Empty : dataReader.GetString(24);
+                objDoctors.IsActive = dataReader.GetBoolean(25);
             }
 
             dataReader.Close();

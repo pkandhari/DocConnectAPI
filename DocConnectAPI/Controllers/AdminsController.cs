@@ -5,9 +5,11 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace DocConnectAPI.Controllers
 {
+    [EnableCors(origins: "http://localhost:3001", headers: "*", methods: "*")]
     public class AdminsController : ApiController
     {
         [Route("admins/{adminId}", Name = "GetAdmin")]
@@ -23,7 +25,7 @@ namespace DocConnectAPI.Controllers
             StringBuilder sbSQL = new StringBuilder();
             AdminModel objAdmin = null;
 
-            sbSQL.AppendFormat("SELECT USER_ID, FIRST_NAME, LAST_NAME, CONTACT, EMAIL, MARITAL_STATUS, GENDER, DOB, ADDRESS, POSTAL_CODE, CITY, PROVINCE, COUNTRY, IS_DOCTOR FROM USER_TABLE WHERE USER_ID = {0}", adminId);
+            sbSQL.AppendFormat("SELECT USER_ID, FIRST_NAME, LAST_NAME, CONTACT, EMAIL, MARITAL_STATUS, GENDER, DOB, ADDRESS, POSTAL_CODE, CITY, PROVINCE, COUNTRY, IS_DOCTOR, IS_ADMIN FROM USER_TABLE WHERE USER_ID = {0}", adminId);
             command = new SqlCommand(sbSQL.ToString(), cnn);
             dataReader = command.ExecuteReader();
             if (dataReader.Read())
@@ -44,6 +46,7 @@ namespace DocConnectAPI.Controllers
                 objAdmin.UserDetails.Province = dataReader.IsDBNull(11) ? string.Empty : dataReader.GetString(11);
                 objAdmin.UserDetails.Country = dataReader.IsDBNull(12) ? string.Empty : dataReader.GetString(12);
                 objAdmin.UserDetails.IsDoctor = dataReader.GetBoolean(13);
+                objAdmin.UserDetails.IsAdmin = dataReader.GetBoolean(14);
             }
 
             dataReader.Close();

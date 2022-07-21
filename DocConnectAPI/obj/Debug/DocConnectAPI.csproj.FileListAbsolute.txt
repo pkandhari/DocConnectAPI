@@ -168,3 +168,6 @@ D:\Capstone\DocConnectAPI\DocConnectAPI\obj\Debug\DocConnectAPI.csproj.CoreCompi
 D:\Capstone\DocConnectAPI\DocConnectAPI\obj\Debug\DocConnectAPI.csproj.CopyComplete
 D:\Capstone\DocConnectAPI\DocConnectAPI\obj\Debug\DocConnectAPI.dll
 D:\Capstone\DocConnectAPI\DocConnectAPI\obj\Debug\DocConnectAPI.pdb
+D:\Capstone\DocConnectAPI\DocConnectAPI\bin\System.Web.Cors.dll
+D:\Capstone\DocConnectAPI\DocConnectAPI\bin\System.Web.Http.Cors.dll
+D:\Capstone\DocConnectAPI\DocConnectAPI\bin\System.Web.Http.Cors.xml

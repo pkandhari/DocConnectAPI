@@ -5,9 +5,11 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace DocConnectAPI.Controllers
 {
+    [EnableCors(origins: "http://localhost:3001", headers: "*", methods: "*")]
     public class PatientsController : ApiController
     {
         [Route("patients", Name = "GetPatients")]
@@ -24,7 +26,7 @@ namespace DocConnectAPI.Controllers
             List<PatientModel> lstPatients = new List<PatientModel>();
             PatientModel objPatient = null;
 
-            sbSQL.AppendFormat("SELECT UT.USER_ID USER_ID, PATIENT_ID, FIRST_NAME, LAST_NAME, CONTACT, EMAIL, MARITAL_STATUS, GENDER, DOB, ADDRESS, POSTAL_CODE, CITY, PROVINCE, COUNTRY, IS_DOCTOR, ALLERGIES, HEALTH_ISSUES ");
+            sbSQL.AppendFormat("SELECT UT.USER_ID USER_ID, PATIENT_ID, FIRST_NAME, LAST_NAME, CONTACT, EMAIL, MARITAL_STATUS, GENDER, DOB, ADDRESS, POSTAL_CODE, CITY, PROVINCE, COUNTRY, IS_DOCTOR, IS_ADMIN, ALLERGIES, HEALTH_ISSUES ");
             sbSQL.AppendFormat("FROM PATIENT INNER JOIN USER_TABLE UT ON UT.USER_ID = PATIENT.USER_ID");
             command = new SqlCommand(sbSQL.ToString(), cnn);
             dataReader = command.ExecuteReader();
@@ -47,8 +49,9 @@ namespace DocConnectAPI.Controllers
                 objPatient.UserDetails.Province = dataReader.IsDBNull(12) ? string.Empty : dataReader.GetString(12);
                 objPatient.UserDetails.Country = dataReader.IsDBNull(13) ? string.Empty : dataReader.GetString(13);
                 objPatient.UserDetails.IsDoctor = dataReader.GetBoolean(14);
-                objPatient.Allergies = dataReader.IsDBNull(15) ? string.Empty : dataReader.GetString(15);
-                objPatient.HealthIssues = dataReader.IsDBNull(16) ? string.Empty : dataReader.GetString(16);
+                objPatient.UserDetails.IsAdmin = dataReader.GetBoolean(15);
+                objPatient.Allergies = dataReader.IsDBNull(16) ? string.Empty : dataReader.GetString(16);
+                objPatient.HealthIssues = dataReader.IsDBNull(17) ? string.Empty : dataReader.GetString(17);
                 lstPatients.Add(objPatient);
             }
 
@@ -71,7 +74,7 @@ namespace DocConnectAPI.Controllers
             StringBuilder sbSQL = new StringBuilder();
             PatientModel objPatient = null;
 
-            sbSQL.AppendFormat("SELECT UT.USER_ID USER_ID, PATIENT_ID, FIRST_NAME, LAST_NAME, CONTACT, EMAIL, MARITAL_STATUS, GENDER, DOB, ADDRESS, POSTAL_CODE, CITY, PROVINCE, COUNTRY, IS_DOCTOR, ALLERGIES, HEALTH_ISSUES ");
+            sbSQL.AppendFormat("SELECT UT.USER_ID USER_ID, PATIENT_ID, FIRST_NAME, LAST_NAME, CONTACT, EMAIL, MARITAL_STATUS, GENDER, DOB, ADDRESS, POSTAL_CODE, CITY, PROVINCE, COUNTRY, IS_DOCTOR, IS_ADMIN, ALLERGIES, HEALTH_ISSUES ");
             sbSQL.AppendFormat("FROM PATIENT INNER JOIN USER_TABLE UT ON UT.USER_ID = PATIENT.USER_ID WHERE PATIENT.USER_ID = {0}", patientId);
             command = new SqlCommand(sbSQL.ToString(), cnn);
             dataReader = command.ExecuteReader();
@@ -94,8 +97,9 @@ namespace DocConnectAPI.Controllers
                 objPatient.UserDetails.Province = dataReader.IsDBNull(12) ? string.Empty : dataReader.GetString(12);
                 objPatient.UserDetails.Country = dataReader.IsDBNull(13) ? string.Empty : dataReader.GetString(13);
                 objPatient.UserDetails.IsDoctor = dataReader.GetBoolean(14);
-                objPatient.Allergies = dataReader.IsDBNull(15) ? string.Empty : dataReader.GetString(15);
-                objPatient.HealthIssues = dataReader.IsDBNull(16) ? string.Empty : dataReader.GetString(16);
+                objPatient.UserDetails.IsAdmin = dataReader.GetBoolean(15);
+                objPatient.Allergies = dataReader.IsDBNull(16) ? string.Empty : dataReader.GetString(16);
+                objPatient.HealthIssues = dataReader.IsDBNull(17) ? string.Empty : dataReader.GetString(17);
             }
 
             dataReader.Close();
