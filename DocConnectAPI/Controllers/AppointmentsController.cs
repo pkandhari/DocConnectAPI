@@ -35,7 +35,7 @@ namespace DocConnectAPI.Controllers
                 objAppointment.AppointmentId = dataReader.GetInt32(0);
                 objAppointment.PatientId = dataReader.GetInt32(1);
                 objAppointment.DoctorId = dataReader.GetInt32(2);
-                objAppointment.Duration = dataReader.GetString(3);
+                objAppointment.Duration = dataReader.GetInt32(3);
                 objAppointment.Title = dataReader.GetString(4);
                 objAppointment.DateAndTime = dataReader.GetString(5);
                 objAppointment.DoctorNotes = dataReader.GetString(6);
@@ -72,7 +72,7 @@ namespace DocConnectAPI.Controllers
                 objAppointment.AppointmentId = dataReader.GetInt32(0);
                 objAppointment.PatientId = dataReader.GetInt32(1);
                 objAppointment.DoctorId = dataReader.GetInt32(2);
-                objAppointment.Duration = dataReader.GetString(3);
+                objAppointment.Duration = dataReader.GetInt32(3);
                 objAppointment.Title = dataReader.GetString(4);
                 objAppointment.DateAndTime = dataReader.GetString(5);
                 objAppointment.DoctorNotes = dataReader.GetString(6);
@@ -107,7 +107,7 @@ namespace DocConnectAPI.Controllers
                 objAppointment.AppointmentId = dataReader.GetInt32(0);
                 objAppointment.PatientId = dataReader.GetInt32(1);
                 objAppointment.DoctorId = dataReader.GetInt32(2);
-                objAppointment.Duration = dataReader.GetString(3);
+                objAppointment.Duration = dataReader.GetInt32(3);
                 objAppointment.Title = dataReader.GetString(4);
                 objAppointment.DateAndTime = dataReader.GetString(5);
                 objAppointment.DoctorNotes = dataReader.GetString(6);
@@ -133,7 +133,7 @@ namespace DocConnectAPI.Controllers
 
             sbSQL.Clear();
             sbSQL.AppendFormat("INSERT INTO APPOINTMENTS(PATIENT_ID, DOCTOR_ID, DURATION, TITLE, APPOINTMENT_DATE, DOCTOR_NOTES, REMARKS) ");
-            sbSQL.AppendFormat("VALUES({0}, {1}, {2}, {3}, {4}, {5}, {6})", objAppointment.PatientId, objAppointment.DoctorId, objAppointment.Duration, objAppointment.Title, objAppointment.DateAndTime, objAppointment.DoctorNotes, objAppointment.Remarks);
+            sbSQL.AppendFormat("VALUES({0}, {1}, {2}, '{3}', '{4}', '{5}', '{6}')", objAppointment.PatientId, objAppointment.DoctorId, objAppointment.Duration, objAppointment.Title, objAppointment.DateAndTime, objAppointment.DoctorNotes, objAppointment.Remarks);
             command = new SqlCommand(sbSQL.ToString(), cnn);
             command.ExecuteNonQuery();
 

@@ -9,7 +9,6 @@
         public string Remarks { get; set; }
         public string DoctorNotes { get; set; }
         public string DateAndTime { get; set; }
-        public string EndDateAndTime { get; set; }
-        public string Duration { get; set; }
+        public int Duration { get; set; }
     }
 }
