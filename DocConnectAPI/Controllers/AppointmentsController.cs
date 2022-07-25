@@ -26,7 +26,10 @@ namespace DocConnectAPI.Controllers
             List<AppointmentModel> lstAppointments = new List<AppointmentModel>();
             AppointmentModel objAppointment = null;
 
-            sbSQL.AppendFormat("SELECT APPOINTMENT_ID, PATIENT_ID, DOCTOR_ID, DURATION, TITLE, APPOINTMENT_DATE, DOCTOR_NOTES, REMARKS FROM APPOINTMENTS WHERE PATIENT_ID = {0}", patientId);
+            sbSQL.AppendFormat("SELECT APPOINTMENT_ID, A.PATIENT_ID, A.DOCTOR_ID, DURATION, TITLE, APPOINTMENT_DATE, DOCTOR_NOTES, REMARKS, ");
+            sbSQL.AppendFormat("UD.FIRST_NAME + ' ' + UD.LAST_NAME, UP.FIRST_NAME + ' ' + UP.LAST_NAME, UD.USER_ID, UP.USER_ID FROM APPOINTMENTS A ");
+            sbSQL.AppendFormat("INNER JOIN PATIENT P ON P.PATIENT_ID = A.PATIENT_ID INNER JOIN DOCTOR D ON D.DOCTOR_ID = A.DOCTOR_ID ");
+            sbSQL.AppendFormat("INNER JOIN USER_TABLE UD ON UD.USER_ID = D.USER_ID INNER JOIN USER_TABLE UP ON UP.USER_ID = P.USER_ID WHERE A.PATIENT_ID = {0}", patientId);
             command = new SqlCommand(sbSQL.ToString(), cnn);
             dataReader = command.ExecuteReader();
             while (dataReader.Read())
@@ -40,6 +43,10 @@ namespace DocConnectAPI.Controllers
                 objAppointment.DateAndTime = dataReader.GetString(5);
                 objAppointment.DoctorNotes = dataReader.GetString(6);
                 objAppointment.Remarks = dataReader.GetString(7);
+                objAppointment.DoctorName = dataReader.GetString(8);
+                objAppointment.PatientName = dataReader.GetString(9);
+                objAppointment.DoctorUserId = dataReader.GetInt32(10);
+                objAppointment.PatientUserId = dataReader.GetInt32(11);
                 lstAppointments.Add(objAppointment);
             }
 
@@ -63,7 +70,10 @@ namespace DocConnectAPI.Controllers
             List<AppointmentModel> lstAppointments = new List<AppointmentModel>();
             AppointmentModel objAppointment = null;
 
-            sbSQL.AppendFormat("SELECT APPOINTMENT_ID, PATIENT_ID, DOCTOR_ID, DURATION, TITLE, APPOINTMENT_DATE, DOCTOR_NOTES, REMARKS FROM APPOINTMENTS WHERE DOCTOR_ID = {0}", doctorId);
+            sbSQL.AppendFormat("SELECT APPOINTMENT_ID, A.PATIENT_ID, A.DOCTOR_ID, DURATION, TITLE, APPOINTMENT_DATE, DOCTOR_NOTES, REMARKS, ");
+            sbSQL.AppendFormat("UD.FIRST_NAME + ' ' + UD.LAST_NAME, UP.FIRST_NAME + ' ' + UP.LAST_NAME, UD.USER_ID, UP.USER_ID FROM APPOINTMENTS A ");
+            sbSQL.AppendFormat("INNER JOIN PATIENT P ON P.PATIENT_ID = A.PATIENT_ID INNER JOIN DOCTOR D ON D.DOCTOR_ID = A.DOCTOR_ID ");
+            sbSQL.AppendFormat("INNER JOIN USER_TABLE UD ON UD.USER_ID = D.USER_ID INNER JOIN USER_TABLE UP ON UP.USER_ID = P.USER_ID WHERE A.DOCTOR_ID = {0}", doctorId);
             command = new SqlCommand(sbSQL.ToString(), cnn);
             dataReader = command.ExecuteReader();
             while (dataReader.Read())
@@ -77,6 +87,10 @@ namespace DocConnectAPI.Controllers
                 objAppointment.DateAndTime = dataReader.GetString(5);
                 objAppointment.DoctorNotes = dataReader.GetString(6);
                 objAppointment.Remarks = dataReader.GetString(7);
+                objAppointment.DoctorName = dataReader.GetString(8);
+                objAppointment.PatientName = dataReader.GetString(9);
+                objAppointment.DoctorUserId = dataReader.GetInt32(10);
+                objAppointment.PatientUserId = dataReader.GetInt32(11);
                 lstAppointments.Add(objAppointment);
             }
 
@@ -118,6 +132,50 @@ namespace DocConnectAPI.Controllers
             cnn.Close();
 
             return await Task.Run(() => this.Ok(objAppointment));
+        }
+
+        [Route("appointments", Name = "GetAppointments")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetAppointments()
+        {
+            SqlConnection cnn;
+            cnn = new SqlConnection(ConnectionString.GetConnectionString());
+            cnn.Open();
+
+            SqlCommand command;
+            SqlDataReader dataReader;
+            StringBuilder sbSQL = new StringBuilder();
+            List<AppointmentModel> lstAppointments = new List<AppointmentModel>();
+            AppointmentModel objAppointment = null;
+
+            sbSQL.AppendFormat("SELECT APPOINTMENT_ID, A.PATIENT_ID, A.DOCTOR_ID, DURATION, TITLE, APPOINTMENT_DATE, DOCTOR_NOTES, REMARKS, ");
+            sbSQL.AppendFormat("UD.FIRST_NAME + ' ' + UD.LAST_NAME, UP.FIRST_NAME + ' ' + UP.LAST_NAME, UD.USER_ID, UP.USER_ID FROM APPOINTMENTS A ");
+            sbSQL.AppendFormat("INNER JOIN PATIENT P ON P.PATIENT_ID = A.PATIENT_ID INNER JOIN DOCTOR D ON D.DOCTOR_ID = A.DOCTOR_ID ");
+            sbSQL.AppendFormat("INNER JOIN USER_TABLE UD ON UD.USER_ID = D.USER_ID INNER JOIN USER_TABLE UP ON UP.USER_ID = P.USER_ID");
+            command = new SqlCommand(sbSQL.ToString(), cnn);
+            dataReader = command.ExecuteReader();
+            while (dataReader.Read())
+            {
+                objAppointment = new AppointmentModel();
+                objAppointment.AppointmentId = dataReader.GetInt32(0);
+                objAppointment.PatientId = dataReader.GetInt32(1);
+                objAppointment.DoctorId = dataReader.GetInt32(2);
+                objAppointment.Duration = dataReader.GetInt32(3);
+                objAppointment.Title = dataReader.GetString(4);
+                objAppointment.DateAndTime = dataReader.GetString(5);
+                objAppointment.DoctorNotes = dataReader.GetString(6);
+                objAppointment.Remarks = dataReader.GetString(7);
+                objAppointment.DoctorName = dataReader.GetString(8);
+                objAppointment.PatientName = dataReader.GetString(9);
+                objAppointment.DoctorUserId = dataReader.GetInt32(10);
+                objAppointment.PatientUserId = dataReader.GetInt32(11);
+                lstAppointments.Add(objAppointment);
+            }
+
+            dataReader.Close();
+            cnn.Close();
+
+            return await Task.Run(() => this.Ok(lstAppointments));
         }
 
         [Route("appointments", Name = "SaveAppointment")]
