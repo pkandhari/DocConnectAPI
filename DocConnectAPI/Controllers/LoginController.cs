@@ -24,7 +24,7 @@ namespace DocConnectAPI.Controllers
             SqlDataReader dataReader;
             StringBuilder sbSQL = new StringBuilder();
             sbSQL.AppendFormat("SELECT LD.USER_ID, FIRST_NAME + ' ' + LAST_NAME DISPLAY_NAME, EMAIL, IS_ADMIN, IS_DOCTOR FROM USER_TABLE UT ");
-            sbSQL.AppendFormat("INNER JOIN LOGIN_DETAILS LD ON LD.USER_ID = UT.USER_ID WHERE USER_NAME = '{0}' AND PASSWORD = '{1}'", objuserlogin.UserName, objuserlogin.UserPassword);
+            sbSQL.AppendFormat("INNER JOIN LOGIN_DETAILS LD ON LD.USER_ID = UT.USER_ID WHERE USER_NAME = '{0}' AND PASSWORD = '{1}'", objuserlogin.UserName, objuserlogin.Password);
             command = new SqlCommand(sbSQL.ToString(), cnn);
             dataReader = command.ExecuteReader();
             if (dataReader.Read())

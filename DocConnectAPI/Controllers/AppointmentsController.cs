@@ -29,7 +29,7 @@ namespace DocConnectAPI.Controllers
             sbSQL.AppendFormat("SELECT APPOINTMENT_ID, A.PATIENT_ID, A.DOCTOR_ID, DURATION, TITLE, APPOINTMENT_DATE, DOCTOR_NOTES, REMARKS, ");
             sbSQL.AppendFormat("UD.FIRST_NAME + ' ' + UD.LAST_NAME, UP.FIRST_NAME + ' ' + UP.LAST_NAME, UD.USER_ID, UP.USER_ID FROM APPOINTMENTS A ");
             sbSQL.AppendFormat("INNER JOIN PATIENT P ON P.PATIENT_ID = A.PATIENT_ID INNER JOIN DOCTOR D ON D.DOCTOR_ID = A.DOCTOR_ID ");
-            sbSQL.AppendFormat("INNER JOIN USER_TABLE UD ON UD.USER_ID = D.USER_ID INNER JOIN USER_TABLE UP ON UP.USER_ID = P.USER_ID WHERE A.PATIENT_ID = {0}", patientId);
+            sbSQL.AppendFormat("INNER JOIN USER_TABLE UD ON UD.USER_ID = D.USER_ID INNER JOIN USER_TABLE UP ON UP.USER_ID = P.USER_ID WHERE P.USER_ID = {0}", patientId);
             command = new SqlCommand(sbSQL.ToString(), cnn);
             dataReader = command.ExecuteReader();
             while (dataReader.Read())
@@ -73,7 +73,7 @@ namespace DocConnectAPI.Controllers
             sbSQL.AppendFormat("SELECT APPOINTMENT_ID, A.PATIENT_ID, A.DOCTOR_ID, DURATION, TITLE, APPOINTMENT_DATE, DOCTOR_NOTES, REMARKS, ");
             sbSQL.AppendFormat("UD.FIRST_NAME + ' ' + UD.LAST_NAME, UP.FIRST_NAME + ' ' + UP.LAST_NAME, UD.USER_ID, UP.USER_ID FROM APPOINTMENTS A ");
             sbSQL.AppendFormat("INNER JOIN PATIENT P ON P.PATIENT_ID = A.PATIENT_ID INNER JOIN DOCTOR D ON D.DOCTOR_ID = A.DOCTOR_ID ");
-            sbSQL.AppendFormat("INNER JOIN USER_TABLE UD ON UD.USER_ID = D.USER_ID INNER JOIN USER_TABLE UP ON UP.USER_ID = P.USER_ID WHERE A.DOCTOR_ID = {0}", doctorId);
+            sbSQL.AppendFormat("INNER JOIN USER_TABLE UD ON UD.USER_ID = D.USER_ID INNER JOIN USER_TABLE UP ON UP.USER_ID = P.USER_ID WHERE D.USER_ID = {0}", doctorId);
             command = new SqlCommand(sbSQL.ToString(), cnn);
             dataReader = command.ExecuteReader();
             while (dataReader.Read())
@@ -113,7 +113,10 @@ namespace DocConnectAPI.Controllers
             StringBuilder sbSQL = new StringBuilder();
             AppointmentModel objAppointment = new AppointmentModel();
 
-            sbSQL.AppendFormat("SELECT APPOINTMENT_ID, PATIENT_ID, DOCTOR_ID, DURATION, TITLE, APPOINTMENT_DATE, DOCTOR_NOTES, REMARKS FROM APPOINTMENTS WHERE APPOINTMENT_ID = {0}", appointmentId);
+            sbSQL.AppendFormat("SELECT APPOINTMENT_ID, A.PATIENT_ID, A.DOCTOR_ID, DURATION, TITLE, APPOINTMENT_DATE, DOCTOR_NOTES, REMARKS, ");
+            sbSQL.AppendFormat("UD.FIRST_NAME + ' ' + UD.LAST_NAME, UP.FIRST_NAME + ' ' + UP.LAST_NAME, UD.USER_ID, UP.USER_ID FROM APPOINTMENTS A ");
+            sbSQL.AppendFormat("INNER JOIN PATIENT P ON P.PATIENT_ID = A.PATIENT_ID INNER JOIN DOCTOR D ON D.DOCTOR_ID = A.DOCTOR_ID ");
+            sbSQL.AppendFormat("INNER JOIN USER_TABLE UD ON UD.USER_ID = D.USER_ID INNER JOIN USER_TABLE UP ON UP.USER_ID = P.USER_ID WHERE A.APPOINTMENT_ID = {0}", appointmentId);
             command = new SqlCommand(sbSQL.ToString(), cnn);
             dataReader = command.ExecuteReader();
             if (dataReader.Read())
@@ -126,6 +129,10 @@ namespace DocConnectAPI.Controllers
                 objAppointment.DateAndTime = dataReader.GetString(5);
                 objAppointment.DoctorNotes = dataReader.GetString(6);
                 objAppointment.Remarks = dataReader.GetString(7);
+                objAppointment.DoctorName = dataReader.GetString(8);
+                objAppointment.PatientName = dataReader.GetString(9);
+                objAppointment.DoctorUserId = dataReader.GetInt32(10);
+                objAppointment.PatientUserId = dataReader.GetInt32(11);
             }
 
             dataReader.Close();
@@ -187,7 +194,19 @@ namespace DocConnectAPI.Controllers
             cnn.Open();
 
             SqlCommand command;
+            SqlDataReader dataReader;
             StringBuilder sbSQL = new StringBuilder();
+
+            sbSQL.Clear();
+
+            sbSQL.AppendFormat("SELECT PATIENT_ID FROM PATIENT WHERE USER_ID = {0}", objAppointment.PatientId);
+            command = new SqlCommand(sbSQL.ToString(), cnn);
+            dataReader = command.ExecuteReader();
+            if (dataReader.Read())
+            {
+                objAppointment.PatientId = dataReader.GetInt32(0);
+            }
+            dataReader.Close();
 
             sbSQL.Clear();
             sbSQL.AppendFormat("INSERT INTO APPOINTMENTS(PATIENT_ID, DOCTOR_ID, DURATION, TITLE, APPOINTMENT_DATE, DOCTOR_NOTES, REMARKS) ");
@@ -195,6 +214,7 @@ namespace DocConnectAPI.Controllers
             command = new SqlCommand(sbSQL.ToString(), cnn);
             command.ExecuteNonQuery();
 
+            dataReader.Close();
             cnn.Close();
 
             return await Task.Run(() => this.Ok());
