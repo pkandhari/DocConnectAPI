@@ -198,6 +198,7 @@
     <Compile Include="BasicAuthHttpModule.cs" />
     <Compile Include="Controllers\AdminsController.cs" />
     <Compile Include="Controllers\DoctorsController.cs" />
+    <Compile Include="Controllers\ComboBoxController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PatientsController.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="Helpers\ConnectionString.cs" />
     <Compile Include="Models\AdminModel.cs" />
     <Compile Include="Models\AppointmentModel.cs" />
+    <Compile Include="Models\ComboBox.cs" />
     <Compile Include="Models\DoctorModel.cs" />
     <Compile Include="Models\LoginDetailsModel.cs" />
     <Compile Include="Models\PatientModel.cs" />

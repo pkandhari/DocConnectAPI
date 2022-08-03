@@ -39,10 +39,10 @@ namespace DocConnectAPI.Controllers
                 objPatient.PatientId = dataReader.GetInt32(1);
                 objPatient.UserDetails.FirstName = dataReader.IsDBNull(2) ? string.Empty : dataReader.GetString(2);
                 objPatient.UserDetails.LastName = dataReader.IsDBNull(3) ? string.Empty : dataReader.GetString(3);
-                objPatient.UserDetails.Contact = dataReader.GetInt32(4);
+                objPatient.UserDetails.Contact = dataReader.IsDBNull(4) ? string.Empty : dataReader.GetString(4);
                 objPatient.UserDetails.Email = dataReader.IsDBNull(5) ? string.Empty : dataReader.GetString(5);
-                objPatient.UserDetails.MaritalStatus = dataReader.IsDBNull(6) ? string.Empty : dataReader.GetString(6);
-                objPatient.UserDetails.Gender = dataReader.IsDBNull(7) ? string.Empty : dataReader.GetString(7);
+                objPatient.UserDetails.MaritalStatus = dataReader.GetInt32(6);
+                objPatient.UserDetails.Gender = dataReader.GetInt32(7);
                 objPatient.UserDetails.DOB = dataReader.IsDBNull(8) ? string.Empty : dataReader.GetString(8);
                 objPatient.UserDetails.Address = dataReader.IsDBNull(9) ? string.Empty : dataReader.GetString(9);
                 objPatient.UserDetails.PostalCode = dataReader.IsDBNull(10) ? string.Empty : dataReader.GetString(10);
@@ -87,10 +87,10 @@ namespace DocConnectAPI.Controllers
                 objPatient.PatientId = dataReader.GetInt32(1);
                 objPatient.UserDetails.FirstName = dataReader.IsDBNull(2) ? string.Empty : dataReader.GetString(2);
                 objPatient.UserDetails.LastName = dataReader.IsDBNull(3) ? string.Empty : dataReader.GetString(3);
-                objPatient.UserDetails.Contact = dataReader.GetInt32(4);
+                objPatient.UserDetails.Contact = dataReader.IsDBNull(4) ? string.Empty : dataReader.GetString(4);
                 objPatient.UserDetails.Email = dataReader.IsDBNull(5) ? string.Empty : dataReader.GetString(5);
-                objPatient.UserDetails.MaritalStatus = dataReader.IsDBNull(6) ? string.Empty : dataReader.GetString(6);
-                objPatient.UserDetails.Gender = dataReader.IsDBNull(7) ? string.Empty : dataReader.GetString(7);
+                objPatient.UserDetails.MaritalStatus = dataReader.GetInt32(6);
+                objPatient.UserDetails.Gender = dataReader.GetInt32(7);
                 objPatient.UserDetails.DOB = dataReader.IsDBNull(8) ? string.Empty : dataReader.GetString(8);
                 objPatient.UserDetails.Address = dataReader.IsDBNull(9) ? string.Empty : dataReader.GetString(9);
                 objPatient.UserDetails.PostalCode = dataReader.IsDBNull(10) ? string.Empty : dataReader.GetString(10);
@@ -120,7 +120,7 @@ namespace DocConnectAPI.Controllers
             SqlCommand command;
             StringBuilder sbSQL = new StringBuilder();
 
-            sbSQL.AppendFormat("UPDATE USER_TABLE SET FIRST_NAME = '{0}', LAST_NAME = '{1}', CONTACT = {2}, EMAIL = '{3}', MARITAL_STATUS = '{4}', GENDER = '{5}', ", objPatient.UserDetails.FirstName, objPatient.UserDetails.LastName, objPatient.UserDetails.Contact, objPatient.UserDetails.Email, objPatient.UserDetails.MaritalStatus, objPatient.UserDetails.Gender);
+            sbSQL.AppendFormat("UPDATE USER_TABLE SET FIRST_NAME = '{0}', LAST_NAME = '{1}', CONTACT = '{2}', EMAIL = '{3}', MARITAL_STATUS = '{4}', GENDER = '{5}', ", objPatient.UserDetails.FirstName, objPatient.UserDetails.LastName, objPatient.UserDetails.Contact, objPatient.UserDetails.Email, objPatient.UserDetails.MaritalStatus, objPatient.UserDetails.Gender);
             sbSQL.AppendFormat("DOB = '{0}', ADDRESS = '{1}', POSTAL_CODE = '{2}', CITY = '{3}', PROVINCE = '{4}', COUNTRY = '{5}' WHERE USER_ID = {6}", objPatient.UserDetails.DOB, objPatient.UserDetails.Address, objPatient.UserDetails.PostalCode, objPatient.UserDetails.City, objPatient.UserDetails.Province, objPatient.UserDetails.Country, objPatient.UserDetails.UserId);
             command = new SqlCommand(sbSQL.ToString(), cnn);
             command.ExecuteNonQuery();
