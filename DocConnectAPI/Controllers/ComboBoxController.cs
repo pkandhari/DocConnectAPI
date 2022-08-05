@@ -10,7 +10,7 @@ using System.Web.Http.Cors;
 namespace DocConnectAPI.Controllers
 {
     //[Authorize]
-    [EnableCors(origins: "http://3.84.17.160", headers: "*", methods: "*")]
+    [EnableCors(origins: "http://44.208.29.151", headers: "*", methods: "*")]
     public class ComboBoxController : ApiController
     {
         [Route("genders", Name = "GetGenders")]
