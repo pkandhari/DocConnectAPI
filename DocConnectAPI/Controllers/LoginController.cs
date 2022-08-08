@@ -9,7 +9,7 @@ using System.Web.Http.Cors;
 
 namespace DocConnectAPI.Controllers
 {
-    [EnableCors(origins: "http://44.208.29.151", headers: "*", methods: "*")]
+    [EnableCors(origins: "http://localhost:3001", headers: "*", methods: "*")]
     public class LoginController : ApiController
     {
         [Route("login", Name = "UserLogin")]

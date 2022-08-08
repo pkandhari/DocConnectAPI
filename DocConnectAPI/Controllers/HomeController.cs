@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace DocConnectAPI.Controllers
 {
-    [EnableCors(origins: "http://44.208.29.151", headers: "*", methods: "*")]
+    [EnableCors(origins: "http://localhost:3001", headers: "*", methods: "*")]
     public class HomeController : Controller
     {
         public ActionResult Index()
